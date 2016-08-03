@@ -7,12 +7,10 @@ import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class HomeTab extends Fragment {
 
@@ -31,11 +29,8 @@ public class HomeTab extends Fragment {
                 .setOutlineColor(getResources().getColor(android.R.color.darker_gray))
                 .setCenterColor(getResources().getColor(android.R.color.holo_blue_dark))
                 .create();
-        try {
-            ivDrawable.setImageDrawable(circle);
-        } catch (NullPointerException e) {
-            Log.e("FUCK", e.getMessage());
-        }
+
+        ivDrawable.setImageDrawable(circle);
 
         progressCircleAnimation().start();
 

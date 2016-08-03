@@ -1,9 +1,5 @@
 package edu.wit.wongh2.duonge1.blindeye;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -15,15 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,10 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private SlidingTabLayout tabs;
     private CharSequence titles[] = {"Settings","Home", "Logs"};
     private int numTabs = 3;
-
-    // "radar" objects
-    // CircularProgressDrawable circle;
-    //private ImageView ivDrawable;
 
     // BTLE state
     private BluetoothAdapter adapter;
@@ -139,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
         bluetoothEnabled = isBluetoothAvailable();
 
-        //messages = (TextView) findViewById(R.id.messages);
         if (bluetoothEnabled) {
             adapter = BluetoothAdapter.getDefaultAdapter();
         }
@@ -148,29 +132,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.drawable.eye);
 
-        // Example of progress circle
-        //ivDrawable = (ImageView) findViewById(R.id.sensorView);
-        //Toast.makeText(getApplicationContext(), ivDrawable.getHeight(), Toast.LENGTH_LONG).show();
-
-        /*circle = new CircularProgressDrawable.Builder()
-                .setRingWidth(getResources().getDimensionPixelSize(R.dimen.drawable_ring_size))
-                .setOutlineColor(getResources().getColor(android.R.color.darker_gray))
-                .setCenterColor(getResources().getColor(android.R.color.holo_blue_dark))
-                .create();
-        try {
-            ivDrawable.setImageDrawable(circle);
-        } catch (NullPointerException e) {
-            Log.e("FUCK", e.getMessage());
-        }
-
-        progressCircleAnimation().start();*/
-
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
         viewPagerAdapter =  new ViewPagerAdapter(getSupportFragmentManager(), titles, numTabs);
 
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(viewPagerAdapter);
+        pager.setCurrentItem(1);
 
         // Assiging the Sliding Tab Layout View
         tabs = (SlidingTabLayout) findViewById(R.id.tabs);
@@ -221,126 +189,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Write some text to the messages text view.
-    // Care is taken to do this on the main UI thread so writeLine can be called
-    // from any thread (like the BTLE callback).
-    /*private void writeLine(final CharSequence text) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                messages.append(text);
-                messages.append("\n");
-
-                messages.invalidate();
-            }
-        });
-    }*/
-
-    // Filtering by custom UUID is broken in Android 4.3 and 4.4, see:
-    //   http://stackoverflow.com/questions/18019161/startlescan-with-128-bit-uuids-doesnt-work-on-native-android-ble-implementation?noredirect=1#comment27879874_18019161
-    // This is a workaround function from the SO thread to manually parse advertisement data.
-    private List<UUID> parseUUIDs(final byte[] advertisedData) {
-        List<UUID> uuids = new ArrayList<UUID>();
-
-        int offset = 0;
-        while (offset < (advertisedData.length - 2)) {
-            int len = advertisedData[offset++];
-            if (len == 0)
-                break;
-
-            int type = advertisedData[offset++];
-            switch (type) {
-                case 0x02: // Partial list of 16-bit UUIDs
-                case 0x03: // Complete list of 16-bit UUIDs
-                    while (len > 1) {
-                        int uuid16 = advertisedData[offset++];
-                        uuid16 += (advertisedData[offset++] << 8);
-                        len -= 2;
-                        uuids.add(UUID.fromString(String.format("%08x-0000-1000-8000-00805f9b34fb", uuid16)));
-                    }
-                    break;
-                case 0x06:// Partial list of 128-bit UUIDs
-                case 0x07:// Complete list of 128-bit UUIDs
-                    // Loop through the advertised 128-bit UUID's.
-                    while (len >= 16) {
-                        try {
-                            // Wrap the advertised bits and order them.
-                            ByteBuffer buffer = ByteBuffer.wrap(advertisedData, offset++, 16).order(ByteOrder.LITTLE_ENDIAN);
-                            long mostSignificantBit = buffer.getLong();
-                            long leastSignificantBit = buffer.getLong();
-                            uuids.add(new UUID(leastSignificantBit,
-                                    mostSignificantBit));
-                        } catch (IndexOutOfBoundsException e) {
-                            // Defensive programming.
-                            //Log.e(LOG_TAG, e.toString());
-                            continue;
-                        } finally {
-                            // Move the offset to read the next uuid.
-                            offset += 15;
-                            len -= 16;
-                        }
-                    }
-                    break;
-                default:
-                    offset += (len - 1);
-                    break;
-            }
-        }
-        return uuids;
-    }
-
     // BTLE device scanning callback.
     private BluetoothAdapter.LeScanCallback scanCallback = new BluetoothAdapter.LeScanCallback() {
         // Called when a device is found.
         @Override
         public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
 
+            // Check if the device has the UART service.
             if (bluetoothDevice.getName() == "blind") {
                 adapter.stopLeScan(scanCallback);
                 gatt = bluetoothDevice.connectGatt(getApplicationContext(), false, callback);
                 Toast.makeText(getApplicationContext(), "Found BlindEye service!", Toast.LENGTH_SHORT).show();
             }
             //writeLine("Found device: " + bluetoothDevice.getAddress());
-            // Check if the device has the UART service.
-            /*if (parseUUIDs(bytes).contains(UART_UUID)) {
-                // Found a device, stop the scan.
-                adapter.stopLeScan(scanCallback);
-                //writeLine("Found UART service!");
-                Toast.makeText(getApplicationContext(), "Found UART service!", Toast.LENGTH_SHORT).show();
-                // Connect to the device.
-                // Control flow will now go to the callback functions when BTLE events occur.
-                gatt = bluetoothDevice.connectGatt(getApplicationContext(), false, callback);
-            }*/
         }
     };
-
-    /*private Animator progressCircleAnimation() {
-        AnimatorSet animation = new AnimatorSet();
-
-        final Animator innerCircleAnimation = ObjectAnimator.ofFloat(circle, CircularProgressDrawable.CIRCLE_SCALE_PROPERTY, 0f, 1f);
-        innerCircleAnimation.setDuration(3600);
-        Animator innerCircleAnimationEnd = ObjectAnimator.ofFloat(circle, CircularProgressDrawable.CIRCLE_SCALE_PROPERTY, 1f, 0f);
-        innerCircleAnimationEnd.setDuration(3600);
-
-        innerCircleAnimationEnd.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                circle.setIndeterminate(true);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                //indeterminateAnimation.end();
-                //circle.setIndeterminate(false);
-                //circle.setProgress(0);
-                progressCircleAnimation().start();
-            }
-        });
-
-        animation.playSequentially(innerCircleAnimation, innerCircleAnimationEnd);
-
-        return animation;
-    }*/
 
     /**
      * Check for Bluetooth.

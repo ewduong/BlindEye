@@ -4,60 +4,12 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="3">
-
-    <LinearLayout
-        android:id="@+id/topRow"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/settingsView"
-            android:layout_weight="1"
-            card_view:cardElevation="2dp"
-            card_view:cardCornerRadius="5dp"
-            android:layout_margin="10dp">
-
-            <TextView
-                android:id="@+id/settingsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/settings"
-                android:textSize="24dp"/>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/logsView"
-            android:layout_weight="1"
-            card_view:cardElevation="2dp"
-            card_view:cardCornerRadius="5dp"
-            android:layout_margin="10dp">
-
-            <TextView
-                android:id="@+id/logsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/logs"
-                android:textSize="24dp"/>
-
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
+    android:orientation="vertical">
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:id="@+id/sensorView"
-        android:layout_weight="2">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/sensorView">
 
     </ImageView>
 
