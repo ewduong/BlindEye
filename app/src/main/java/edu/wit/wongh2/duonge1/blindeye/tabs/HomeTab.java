@@ -1,9 +1,10 @@
-package edu.wit.wongh2.duonge1.blindeye;
+package edu.wit.wongh2.duonge1.blindeye.tabs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,18 +12,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import edu.wit.wongh2.duonge1.blindeye.CircularProgressDrawable;
+import edu.wit.wongh2.duonge1.blindeye.MainActivity;
+import edu.wit.wongh2.duonge1.blindeye.R;
 
 public class HomeTab extends Fragment {
 
     // "radar" objects
     private CircularProgressDrawable circle;
     private ImageView ivDrawable;
+    private TextView tv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tab_home, container, false);
 
-        ivDrawable = (ImageView) v.findViewById(R.id.sensorView);
+        /*ivDrawable = (ImageView) v.findViewById(R.id.sensorView);
 
         circle = new CircularProgressDrawable.Builder()
                 .setRingWidth(getResources().getDimensionPixelSize(R.dimen.drawable_ring_size))
@@ -32,7 +39,7 @@ public class HomeTab extends Fragment {
 
         ivDrawable.setImageDrawable(circle);
 
-        progressCircleAnimation().start();
+        progressCircleAnimation().start();*/
 
         return v;
     }
@@ -65,5 +72,9 @@ public class HomeTab extends Fragment {
         return animation;
     }
 
+    public void setText(String text) {
+        tv = (TextView) getView().findViewById(R.id.test);
+        tv.setText(text);
+    }
 
 }

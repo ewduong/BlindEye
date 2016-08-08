@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference android:title="Max Distance"
+        android:key="maxDist"
+        android:summary="Please enter a max distance for DANGER ZONE"
+        android:inputType="number"></EditTextPreference>
+
+</PreferenceScreen>

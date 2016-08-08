@@ -4,6 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import edu.wit.wongh2.duonge1.blindeye.tabs.HomeTab;
+import edu.wit.wongh2.duonge1.blindeye.tabs.LogsTab;
+
 /**
  * Created by hp1 on 21-01-2015.
  */
@@ -27,10 +30,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new SettingsTab();
-            case 1:
                 return new HomeTab();
-            case 2:
+            case 1:
                 return new LogsTab();
             default:
                 return new HomeTab();

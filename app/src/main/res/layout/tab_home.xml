@@ -6,11 +6,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/test"
+        android:text="suh"
+        android:textSize="36dp"
+        android:gravity="center"/>
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/sensorView">
-
+        android:id="@+id/sensorView"
+        android:visibility="invisible">
     </ImageView>
 
 </LinearLayout>
