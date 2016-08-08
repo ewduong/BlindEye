@@ -3,6 +3,7 @@ package edu.wit.wongh2.duonge1.blindeye;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 import edu.wit.wongh2.duonge1.blindeye.tabs.HomeTab;
 import edu.wit.wongh2.duonge1.blindeye.tabs.LogsTab;
@@ -11,6 +12,7 @@ import edu.wit.wongh2.duonge1.blindeye.tabs.LogsTab;
  * Created by hp1 on 21-01-2015.
  */
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+    private Fragment mCurrentFragment;
 
     CharSequence titles[]; // This will Store the Titles of the Tabs which are Going to be passed when ViewPagerAdapter is created
     int numTabs; // Store the number of tabs, this will also be passed when the ViewPagerAdapter is created
@@ -38,6 +40,18 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    public Fragment getCurrentFragment() {
+        return mCurrentFragment;
+    }
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        if (getCurrentFragment() != object) {
+            mCurrentFragment = ((Fragment) object);
+        }
+        super.setPrimaryItem(container, position, object);
+    }
+
     // This method return the titles for the Tabs in the Tab Strip
 
     @Override
@@ -51,4 +65,5 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return numTabs;
     }
+
 }

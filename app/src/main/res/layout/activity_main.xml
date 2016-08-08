@@ -22,13 +22,6 @@
         android:elevation="4dp"
         android:background="@color/ColorPrimary"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:textSize="46dp"
-        android:id="@+id/sway" />
-
     <android.support.v4.widget.DrawerLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
