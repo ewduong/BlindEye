@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -30,13 +31,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.UUID;
 
-import cn.fanrunqi.waveprogress.WaveProgressView;
 import edu.wit.wongh2.duonge1.blindeye.tabs.HomeTab;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,9 +62,12 @@ public class MainActivity extends AppCompatActivity {
     private UartService mService = null;
     private BluetoothDevice mDevice = null;
     private String deviceAddress = "DA:BD:19:66:96:7B";
-    private String sensorData;
-    private WaveProgressView wpv;
+    private String sensorData, sensorDataLast;
     private HomeTab homeTab;
+    private Vibrator v;
+    private long[] patternFar = {0, 100, 500};
+    private long[] patternMid = {0, 100, 300};
+    private long[] patternClose = {0, 100, 100};
 
     // UI elements
     private Toolbar toolbar;
@@ -120,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
+
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         addDrawerItems();
         setupDrawer();
@@ -372,9 +376,23 @@ public class MainActivity extends AppCompatActivity {
                                 homeTab = (HomeTab) viewPagerAdapter.getCurrentFragment();
                                 homeTab.setText(sensorData);
 
-                                if (Integer.parseInt(sensorData) <= 100){
-                                    homeTab.getWaveProgressView().setCurrent(Integer.parseInt(sensorData), "");
+                                if (Integer.parseInt(sensorData) <= 100 && !sensorData.equals(sensorDataLast)){
+                                    homeTab.getWaveProgressView().setCurrent(Math.abs(Integer.parseInt(sensorData)-100), "");
+
+                                    if (Integer.parseInt(sensorData) > 0 && Integer.parseInt(sensorData) < 25) {
+                                        v.cancel();
+                                        v.vibrate(patternClose, 0);
+                                    } else if (Integer.parseInt(sensorData) > 25 && Integer.parseInt(sensorData) < 50) {
+                                        v.cancel();
+                                        v.vibrate(patternMid, 0);
+                                    } else if (Integer.parseInt(sensorData) > 50 && Integer.parseInt(sensorData) < 100) {
+                                        v.cancel();
+                                        v.vibrate(patternFar, 0);
+                                    }
+                                } else if (Integer.parseInt(sensorData) > 100) {
+                                    v.cancel();
                                 }
+                                sensorDataLast = sensorData;
                             }
 
                         } catch (Exception e) {
@@ -458,10 +476,12 @@ public class MainActivity extends AppCompatActivity {
                 adapter.stopLeScan(scanCallback);
                 // Connect to the device.
                 // Control flow will now go to the callback functions when BTLE events occur.
-                //mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
+                mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
                 mService.connect(deviceAddress);
                 showMessage("Connected to BlindEye!");
             }
         }
     };
+
+
 }
